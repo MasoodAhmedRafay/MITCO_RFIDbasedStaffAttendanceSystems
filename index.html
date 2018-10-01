@@ -1,0 +1,72 @@
+<html><head><title>WGS</title>
+
+</head>
+<body>
+<div align="center"><font color="#FF0000" size="5" face="Verdana, Arial, Helvetica, sans-serif">Code:</font> 
+  <input tabindex=1 type=text id="EmpCode" style="font-size:28pt;height:40px;width:200px;">
+  <br>
+</div>
+<div id="Data">
+</div>
+</body>
+<script language="javascript">
+var IsAjaxActivated = false;
+var Ajax;
+try { Ajax = new ActiveXObject("Msxml2.XMLHTTP"); }//IE
+catch (e) { try { Ajax = new ActiveXObject("Microsoft.XMLHTTP"); }// code for IE6, IE5
+catch (e) { try { Ajax = new XMLHttpRequest(); }// code for IE7+, Firefox, Chrome, Opera, Safari
+catch (e) { Ajax = false; }}}
+
+document.getElementById('EmpCode').onkeydown = function(){
+    if(event.keyCode == 13){
+        var id = this.value;
+        this.value = "";
+        AjaxFormExecute('ajax.php','id='+id,true,'Data');
+        document.getElementById('EmpCode').focus();
+	}
+}
+
+function AjaxFormExecute(URLAjax, Parameters, Mode,DIV){
+//if (!Ajax) {
+//  alert (Ajax+"Your browser does not support XMLHTTP!");
+//}
+        if (Mode==null)
+                Mode = false;
+        //
+    var AjaxReplyArray = '' ;
+        if (IsAjaxActivated) {
+                return false ;
+        }
+        IsAjaxActivated = true;
+        //Parameters += "&tmp="+Math.random();
+        URLAjax += "?tmp="+Math.random();
+        Ajax.open("POST", URLAjax, Mode);
+        Ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+//        Ajax.setRequestHeader("Content-length", Parameters.length);
+//        Ajax.setRequestHeader("Connection", "close");
+        Ajax.onreadystatechange = function()
+        {
+                if (Ajax.readyState==4) {
+		document.getElementById(DIV).innerHTML = Ajax.responseText;
+//                      AjaxReplyArray = Ajax.responseText;
+//                      alert(AjaxReplyArray);
+IsAjaxActivated = false;
+                }
+//if (AjaxFormURL=="Ajax/ajxGeneralProcesses.php") alert(Ajax.responseText.split("|"));
+        }
+        Ajax.send(Parameters);
+        return AjaxReplyArray;
+}
+
+function GetData(){
+//      document.getElementById('Error').innerHTML = cnt++ ;
+        var data = AjaxFormExecute('ajxDash.php','',true,'Dash') ;
+//                      alert(data) ;
+//      if(data!=false){
+//                      document.getElementById('Pending').innerHTML = data ;
+//      }
+}
+
+document.getElementById('EmpCode').focus();
+</script>
+</html>
